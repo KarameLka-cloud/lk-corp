@@ -1,0 +1,126 @@
+import {
+  AdaptationPlanTemplateTask,
+} from "@/interfaces/api/AdaptationPlanTemplateType.ts";
+import type { ResponsibleRole } from "@/interfaces/api/AdaptationPlanType.ts";
+import { TEMPLATE_RESPONSIBLE_ROLES } from "@/constants/adaptation.ts";
+import { compareDayRanges, formatDayRange } from "@/utils/formatDayRange.ts";
+
+export type { ResponsibleRole };
+export type ResponsibleRoleForm = ResponsibleRole | "";
+
+export type TaskRule = AdaptationPlanTemplateTask & {
+  responsible_role: ResponsibleRole;
+  links: string[];
+};
+
+export interface TaskRuleForm {
+  description: string;
+  responsible_role: ResponsibleRoleForm;
+  day_from?: string;
+  day_to?: string;
+  links: string;
+}
+
+export interface GroupedRuleBlock {
+  key: string;
+  title: string;
+  dayFrom: string;
+  dayTo: string;
+  items: Array<{ rule: TaskRuleForm; index: number }>;
+}
+
+export const EMPTY_RULE: TaskRuleForm = {
+  description: "",
+  responsible_role: "",
+  links: "",
+};
+
+export const RESPONSIBLE_ROLE_OPTIONS = TEMPLATE_RESPONSIBLE_ROLES;
+
+export function toFormRule(rule: AdaptationPlanTemplateTask): TaskRuleForm {
+  return {
+    description: rule.description,
+    responsible_role: (TEMPLATE_RESPONSIBLE_ROLES as readonly string[]).includes(
+      rule.responsible_role,
+    )
+      ? rule.responsible_role
+      : "",
+    day_from: rule.day_from ? String(rule.day_from) : "",
+    day_to: rule.day_to ? String(rule.day_to) : "",
+    links: (rule.links ?? []).join(", "),
+  };
+}
+
+export function toPayloadRule(rule: TaskRuleForm): TaskRule {
+  const responsible_role = rule.responsible_role;
+  if (!responsible_role) {
+    throw new Error("Responsible role required");
+  }
+
+  return {
+    description: rule.description.trim(),
+    responsible_role,
+    day_from: rule.day_from ? Number(rule.day_from) : null,
+    day_to: rule.day_to ? Number(rule.day_to) : null,
+    links: rule.links
+      .split(",")
+      .map((link) => link.trim())
+      .filter(Boolean),
+  };
+}
+
+export function prepareDraftRules(
+  rules: TaskRuleForm[],
+  dayFrom: string,
+  dayTo: string,
+): { ok: true; rules: TaskRuleForm[] } | { ok: false; error: string } {
+  const prepared = rules.filter((rule) => rule.description.trim().length > 0);
+  if (!prepared.length) {
+    return { ok: false, error: "Добавьте хотя бы одну задачу с описанием." };
+  }
+  if (prepared.some((rule) => !rule.responsible_role)) {
+    return { ok: false, error: "Выберите ответственного для каждой задачи." };
+  }
+
+  return {
+    ok: true,
+    rules: prepared.map((rule) => ({
+      ...rule,
+      day_from: dayFrom,
+      day_to: dayTo,
+    })),
+  };
+}
+
+export function groupTaskRules(rules: TaskRuleForm[]): GroupedRuleBlock[] {
+  const map = new Map<string, GroupedRuleBlock>();
+
+  rules.forEach((rule, index) => {
+    const dayFrom = rule.day_from || "";
+    const dayTo = rule.day_to || "";
+    const key = `${dayFrom}:${dayTo}`;
+
+    if (!map.has(key)) {
+      const title = dayFrom
+        ? formatDayRange(
+            Number(dayFrom),
+            dayTo ? Number(dayTo) : null,
+            Number(dayFrom),
+            "День",
+          )
+        : "Все дни";
+      map.set(key, { key, title, dayFrom, dayTo, items: [] });
+    }
+
+    map.get(key)?.items.push({ rule, index });
+  });
+
+  return Array.from(map.values()).sort((left, right) =>
+    compareDayRanges(
+      left.dayFrom ? Number(left.dayFrom) : null,
+      left.dayTo ? Number(left.dayTo) : null,
+      right.dayFrom ? Number(right.dayFrom) : null,
+      right.dayTo ? Number(right.dayTo) : null,
+    ),
+  );
+}

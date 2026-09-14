@@ -1,0 +1,17 @@
+export const ROUTES = {
+  ROOT: "/",
+  HOME: "/home",
+  LOGIN: "/login",
+  ADAPTATION: "/adaptation",
+  LEARNING: "/learning",
+  MENTORSHIP: "/mentorship",
+  MENTORSHIP_INTERNS: "/mentorship/interns",
+  MENTORSHIP_INTERNS_PLAN_EDIT: "/mentorship/interns/:planId/edit",
+  SERVICES: "/services",
+  EMPLOYEES: "/services/employees",
+  ADMIN: "/admin",
+  ADMIN_USERS: "/admin/users",
+  ADMIN_LEARNING: "/admin/learning",
+  ADMIN_ADAPTATION_TEMPLATES: "/admin/adaptation/templates",
+  ADMIN_ADAPTATION_TEMPLATE_TASKS: "/admin/adaptation/templates/:templateId",
+} as const;
