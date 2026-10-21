@@ -19,3 +19,15 @@ export function capitalizeFirst(value: string): string {
   if (!value) return value;
   return value.charAt(0).toLocaleUpperCase("ru-RU") + value.slice(1);
 }
+
+export const COMPLETION_STATUS_BG_LIGHT: Record<CompletionStatus, string> = {
+  "в процессе": "bg-sky-50",
+  выполнен: "bg-emerald-50",
+  "есть замечания": "bg-amber-50",
+};
+
+export const COMPLETION_STATUS_TEXT: Record<CompletionStatus, string> = {
+  "в процессе": "text-sky-800",
+  выполнен: "text-emerald-700",
+  "есть замечания": "text-amber-800",
+};

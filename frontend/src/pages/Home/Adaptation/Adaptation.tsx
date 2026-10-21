@@ -1,5 +1,5 @@
-import { JSX } from "react";
-import { Archive, ChevronRight } from "lucide-react";
+import { JSX, useState } from "react";
+import { LayoutGrid, List } from "lucide-react";
 import { toast } from "sonner";
 import DataMessage, {
   DataStateCenter,
@@ -7,12 +7,9 @@ import DataMessage, {
 import CareerDay from "@/components/ui/custom/CareerDay";
 import Loader from "@/components/ui/custom/Loader";
 import { Card, CardContent } from "@/components/ui/shadcn/card";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/shadcn/collapsible";
+
 import { DAY_META_CHIP_CLASS } from "@/components/adaptation/dayCardMeta";
+import AdaptationDaysView from "@/components/adaptation/AdaptationDaysView";
 import {
   useGetMyAdaptationPlanQuery,
   useUpdateMyAdaptationInternCommentMutation,
@@ -21,13 +18,24 @@ import {
 import { FORM_STATUS_MESSAGES } from "@/constants/formStatus.ts";
 import convertDate from "@/utils/convertDate.ts";
 import type { TaskStatus } from "@/interfaces/api/AdaptationPlanType.ts";
-import { hasAdaptationPlan, sortAdaptationDays } from "@/utils/adaptationPlan.ts";
+import {
+  hasAdaptationPlan,
+  sortAdaptationDays,
+} from "@/utils/adaptationPlan.ts";
 import { toastMutationError } from "@/utils/apiError.ts";
+
+type AdaptationViewType = "list" | "blocks";
 
 function Adaptation(): JSX.Element {
   const [updateInternComment] = useUpdateMyAdaptationInternCommentMutation();
   const [updateTaskStatus] = useUpdateMyAdaptationTaskStatusMutation();
-  const { data: plan, isLoading, isError } = useGetMyAdaptationPlanQuery(undefined);
+  const {
+    data: plan,
+    isLoading,
+    isError,
+  } = useGetMyAdaptationPlanQuery(undefined);
+  const [viewType, setViewType] = useState<AdaptationViewType>("blocks");
+  const [selectedDayId, setSelectedDayId] = useState<number | null>(null);
 
   const handleUpdateInternComment = async (
     dayId: number | undefined,
@@ -79,16 +87,6 @@ function Adaptation(): JSX.Element {
   }
 
   const adaptationDays = sortAdaptationDays(plan.days ?? []);
-  const archivedDays = adaptationDays.filter(
-    (day) => day.completion === "выполнен",
-  );
-  const currentDays = adaptationDays.filter(
-    (day) => day.completion !== "выполнен",
-  );
-  const isPlanCompleted =
-    adaptationDays.length > 0 &&
-    currentDays.length === 0 &&
-    archivedDays.length === adaptationDays.length;
   const planInfo = [
     { label: "Начало стажировки", value: convertDate(plan.start_date) },
     { label: "График", value: plan.work_schedule ?? "—" },
@@ -99,12 +97,13 @@ function Adaptation(): JSX.Element {
     },
     {
       label: "Руководитель отделения",
-      value: plan.supervisor_user?.name ?? (plan.supervisor ? `ID: ${plan.supervisor}` : "—"),
+      value:
+        plan.supervisor_user?.name ??
+        (plan.supervisor ? `ID: ${plan.supervisor}` : "—"),
     },
     {
       label: "Начальник отдела",
-      value:
-        plan.department_head_user?.name ?? `ID: ${plan.department_head}`,
+      value: plan.department_head_user?.name ?? `ID: ${plan.department_head}`,
     },
   ] as const;
 
@@ -127,48 +126,70 @@ function Adaptation(): JSX.Element {
         </CardContent>
       </Card>
 
-      {archivedDays.length > 0 && (
-        <Collapsible className="group/collapsible flex w-full flex-col gap-2">
-          <CollapsibleTrigger asChild>
+      {adaptationDays.length > 0 && (
+        <div className="flex items-center gap-2">
+          <div className="inline-flex rounded-lg border bg-card p-0.5">
             <button
               type="button"
-              className="flex w-fit items-center gap-2 rounded-md border bg-card px-4 py-3 text-left text-sm font-medium shadow-xs transition-colors hover:bg-muted"
+              onClick={() => setViewType("blocks")}
+              className={`
+                flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-all
+                ${
+                  viewType === "blocks"
+                    ? "bg-primary text-primary-foreground shadow-sm"
+                    : "text-muted-foreground hover:bg-muted"
+                }
+              `}
             >
-              <ChevronRight className="size-4 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-              <Archive className="size-4 text-muted-foreground" />
-              <span>Архив завершённых дней</span>
+              <LayoutGrid className="size-4" />
+              <span>Блоки</span>
             </button>
-          </CollapsibleTrigger>
-          <CollapsibleContent className="flex flex-col gap-4">
-            {archivedDays.map((day) => (
-              <CareerDay
-                key={day.id}
-                day={day}
-                onUpdateInternComment={handleUpdateInternComment}
-                onUpdateTaskStatus={handleUpdateTaskStatus}
-              />
-            ))}
-          </CollapsibleContent>
-        </Collapsible>
+            <button
+              type="button"
+              onClick={() => setViewType("list")}
+              className={`
+                flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-all
+                ${
+                  viewType === "list"
+                    ? "bg-primary text-primary-foreground shadow-sm"
+                    : "text-muted-foreground hover:bg-muted"
+                }
+              `}
+            >
+              <List className="size-4" />
+              <span>Список</span>
+            </button>
+          </div>
+        </div>
       )}
 
-      {currentDays.length > 0 ? (
-        currentDays.map((day) => (
-          <CareerDay
-            key={day.id}
-            day={day}
-            onUpdateInternComment={handleUpdateInternComment}
-            onUpdateTaskStatus={handleUpdateTaskStatus}
+      {viewType === "list" ? (
+        adaptationDays.length > 0 ? (
+          adaptationDays.map((day) => (
+            <CareerDay
+              key={day.id}
+              day={day}
+              onUpdateInternComment={handleUpdateInternComment}
+              onUpdateTaskStatus={handleUpdateTaskStatus}
+            />
+          ))
+        ) : (
+          <DataMessage
+            type="noData"
+            centered
+            message="🏅 План адаптации завершен"
+            className="border-emerald-200 bg-emerald-50 text-emerald-700 shadow-sm"
           />
-        ))
-      ) : isPlanCompleted ? (
-        <DataMessage
-          type="noData"
-          centered
-          message="🏅 План адаптации завершен"
-          className="border-emerald-200 bg-emerald-50 text-emerald-700 shadow-sm"
+        )
+      ) : (
+        <AdaptationDaysView
+          days={adaptationDays}
+          selectedDayId={selectedDayId}
+          onSelectDay={setSelectedDayId}
+          onUpdateInternComment={handleUpdateInternComment}
+          onUpdateTaskStatus={handleUpdateTaskStatus}
         />
-      ) : null}
+      )}
     </div>
   );
 }
