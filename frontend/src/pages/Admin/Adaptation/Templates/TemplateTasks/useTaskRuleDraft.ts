@@ -64,7 +64,9 @@ export function useTaskRuleDraft() {
         rules:
           previous.rules.length === 1
             ? [{ ...EMPTY_RULE }]
-            : previous.rules.filter((_, currentIndex) => currentIndex !== index),
+            : previous.rules.filter(
+                (_, currentIndex) => currentIndex !== index,
+              ),
       };
     });
 

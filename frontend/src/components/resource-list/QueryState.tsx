@@ -1,5 +1,7 @@
 import { ReactNode } from "react";
-import DataMessage, { DataStateCenter } from "@/components/ui/custom/DataMessage";
+import DataMessage, {
+  DataStateCenter,
+} from "@/components/ui/custom/DataMessage";
 import Loader from "@/components/ui/custom/Loader";
 
 interface QueryStateProps {

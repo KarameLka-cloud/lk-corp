@@ -7,7 +7,12 @@ import {
   useRevokeRoleMutation,
   type RoleOption,
 } from "@/services/store/features/users.ts";
-import { displayRoleLabel, displayRoleName, hasRole, type UserRole } from "@/constants/roles.ts";
+import {
+  displayRoleLabel,
+  displayRoleName,
+  hasRole,
+  type UserRole,
+} from "@/constants/roles.ts";
 import { Button } from "@/components/ui/shadcn/button";
 import { Field, FieldLabel } from "@/components/ui/shadcn/field";
 import {
@@ -166,15 +171,17 @@ function UserEditDialog({
                         <SelectTrigger id="user-role" className="w-full">
                           <SelectValue placeholder="Выберите роль" />
                         </SelectTrigger>
-                        <SelectContent className="z-[60]">
+                        <SelectContent className="z-60">
                           <SelectItem value={NO_ROLE_VALUE}>
                             Нет прав
                           </SelectItem>
-                          {roles.map((role: { name: string; label: string }) => (
-                            <SelectItem key={role.name} value={role.name}>
-                              {displayRoleLabel(role.name)}
-                            </SelectItem>
-                          ))}
+                          {roles.map(
+                            (role: { name: string; label: string }) => (
+                              <SelectItem key={role.name} value={role.name}>
+                                {displayRoleLabel(role.name)}
+                              </SelectItem>
+                            ),
+                          )}
                         </SelectContent>
                       </Select>
                     )}
@@ -185,9 +192,7 @@ function UserEditDialog({
                 <Button
                   type="submit"
                   disabled={
-                    waitingForRoles ||
-                    selectedRole === assignedRole ||
-                    isSaving
+                    waitingForRoles || selectedRole === assignedRole || isSaving
                   }
                 >
                   {isSaving && <Spinner />}

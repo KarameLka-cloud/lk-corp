@@ -48,9 +48,7 @@ function TaskDayFormDialog({
 }): JSX.Element {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent
-        className="flex max-h-[90vh] flex-col gap-0 overflow-hidden p-0 sm:max-w-2xl"
-      >
+      <DialogContent className="flex max-h-[90vh] flex-col gap-0 overflow-hidden p-0 sm:max-w-2xl">
         <DialogHeader className="px-4 py-4">
           <DialogTitle>
             {isEdit ? "Редактирование дня" : "Новый день"}

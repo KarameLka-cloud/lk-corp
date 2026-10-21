@@ -8,7 +8,7 @@ interface PageTitlePropsType {
 function PageTitle({ title, element }: PageTitlePropsType): JSX.Element {
   useEffect(() => {
     const previousTitle = document.title;
-    document.title = `${title} - МФЦ`;
+    document.title = `${title} - Личный кабинет сотрудника`;
 
     return () => {
       document.title = previousTitle;

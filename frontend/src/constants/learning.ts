@@ -42,7 +42,10 @@ export const LEARNING_DELETE_MESSAGES: Record<
   },
 };
 
-export const LEARNING_TYPES_BY_CATEGORY: Record<LearningCategory, LearningType[]> = {
+export const LEARNING_TYPES_BY_CATEGORY: Record<
+  LearningCategory,
+  LearningType[]
+> = {
   education: ["event", "course", "webinar", "test"],
   edo: ["event", "course", "test"],
 };

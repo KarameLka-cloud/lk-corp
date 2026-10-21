@@ -151,26 +151,26 @@ function CareerDay({
         </div>
 
         <DayCommentsSection>
-            <Field>
-              <FieldLabel>Комментарий УПиПК</FieldLabel>
-              <ReadonlyFieldValue value={day.employee_comment ?? ""} />
+          <Field>
+            <FieldLabel>Комментарий УПиПК</FieldLabel>
+            <ReadonlyFieldValue value={day.employee_comment ?? ""} />
+          </Field>
+
+          <CommentFieldWithSave
+            label="Комментарий стажера"
+            value={internComment}
+            savedValue={savedInternComment}
+            isSaving={isSavingComment}
+            onChange={setInternComment}
+            onSave={() => void handleSaveInternComment()}
+          />
+
+          {READONLY_COMMENT_FIELDS.map((field) => (
+            <Field key={field.key}>
+              <FieldLabel>{field.label}</FieldLabel>
+              <ReadonlyFieldValue value={day[field.key] ?? ""} />
             </Field>
-
-            <CommentFieldWithSave
-              label="Комментарий стажера"
-              value={internComment}
-              savedValue={savedInternComment}
-              isSaving={isSavingComment}
-              onChange={setInternComment}
-              onSave={() => void handleSaveInternComment()}
-            />
-
-            {READONLY_COMMENT_FIELDS.map((field) => (
-              <Field key={field.key}>
-                <FieldLabel>{field.label}</FieldLabel>
-                <ReadonlyFieldValue value={day[field.key] ?? ""} />
-              </Field>
-            ))}
+          ))}
         </DayCommentsSection>
       </CardContent>
     </Card>

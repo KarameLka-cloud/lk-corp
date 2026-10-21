@@ -191,7 +191,7 @@ function PlanCreateDialog({
                 <SelectTrigger id="plan-schedule" className="w-full">
                   <SelectValue placeholder="Выберите режим работы" />
                 </SelectTrigger>
-                <SelectContent className="z-[60]">
+                <SelectContent className="z-60">
                   {workSchedules.map((schedule) => (
                     <SelectItem key={schedule} value={schedule}>
                       {schedule}
@@ -210,7 +210,7 @@ function PlanCreateDialog({
                 <SelectTrigger id="plan-template" className="w-full">
                   <SelectValue placeholder="Выберите шаблон" />
                 </SelectTrigger>
-                <SelectContent className="z-[60]">
+                <SelectContent className="z-60">
                   {filteredTemplates.map((template) => (
                     <SelectItem key={template.id} value={String(template.id)}>
                       {template.name} (смена: {formatShifts(template.shifts)})

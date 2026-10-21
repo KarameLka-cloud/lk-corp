@@ -16,7 +16,7 @@ function InfoItem({ label, value }: InfoItemProps): JSX.Element {
       <dt className="text-sm text-muted-foreground">
         {label.replace(/:$/, "")}
       </dt>
-      <dd className="text-sm font-medium break-words">{value || "—"}</dd>
+      <dd className="text-sm font-medium wrap-break-word">{value || "—"}</dd>
     </div>
   );
 }

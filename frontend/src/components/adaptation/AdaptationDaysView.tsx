@@ -1,9 +1,5 @@
 import { JSX } from "react";
 import { CheckCircle, AlertCircle, CalendarClock } from "lucide-react";
-import type {
-  AdaptationPlanDayType,
-  TaskStatus,
-} from "@/interfaces/api/AdaptationPlanType.ts";
 import {
   COMPLETION_STATUS_BG_LIGHT,
   COMPLETION_STATUS_TEXT,
@@ -11,34 +7,34 @@ import {
 import { formatDayRange } from "@/utils/formatDayRange.ts";
 import CareerDay from "@/components/ui/custom/CareerDay";
 
-interface AdaptationDaysViewProps {
-  days: AdaptationPlanDayType[];
-  selectedDayId: number | null;
-  onSelectDay: (dayId: number | null) => void;
-  onUpdateInternComment?: (
-    dayId: number | undefined,
-    comment: string,
-  ) => Promise<void> | void;
-  onUpdateTaskStatus?: (
-    dayId: number | undefined,
-    taskId: number | undefined,
-    status: TaskStatus,
-  ) => Promise<void> | void;
+interface DayLike {
+  id: number;
+  work_day: number;
+  day_from?: number | null;
+  day_to?: number | null;
+  completion: string;
+  date_from: string;
 }
 
-const STATUS_ICON: Record<AdaptationPlanDayType["completion"], JSX.Element> = {
+interface AdaptationDaysViewProps<T extends DayLike> {
+  days: T[];
+  selectedDayId: number | null;
+  onSelectDay: (dayId: number | null) => void;
+  renderSelectedDay?: (day: T) => JSX.Element;
+}
+
+const STATUS_ICON: Record<string, JSX.Element> = {
   "в процессе": <CalendarClock className="size-3.5" />,
   выполнен: <CheckCircle className="size-3.5" />,
   "есть замечания": <AlertCircle className="size-3.5" />,
 };
 
-function AdaptationDaysView({
+function AdaptationDaysView<T extends DayLike>({
   days,
   selectedDayId,
   onSelectDay,
-  onUpdateInternComment,
-  onUpdateTaskStatus,
-}: AdaptationDaysViewProps): JSX.Element {
+  renderSelectedDay,
+}: AdaptationDaysViewProps<T>): JSX.Element {
   if (days.length === 0) return <></>;
 
   return (
@@ -46,8 +42,14 @@ function AdaptationDaysView({
       <div className="flex flex-wrap gap-2">
         {days.map((day) => {
           const isSelected = selectedDayId === day.id;
-          const bgColorLight = COMPLETION_STATUS_BG_LIGHT[day.completion];
-          const textColor = COMPLETION_STATUS_TEXT[day.completion];
+          const bgColorLight =
+            COMPLETION_STATUS_BG_LIGHT[
+              day.completion as keyof typeof COMPLETION_STATUS_BG_LIGHT
+            ];
+          const textColor =
+            COMPLETION_STATUS_TEXT[
+              day.completion as keyof typeof COMPLETION_STATUS_TEXT
+            ];
           const dayNumber = formatDayRange(
             day.day_from,
             day.day_to,
@@ -79,14 +81,16 @@ function AdaptationDaysView({
         <div className="animate-in fade-in slide-in-from-top-2 duration-200">
           {days
             .filter((d) => d.id === selectedDayId)
-            .map((day) => (
-              <CareerDay
-                key={day.id}
-                day={day}
-                onUpdateInternComment={onUpdateInternComment}
-                onUpdateTaskStatus={onUpdateTaskStatus}
-              />
-            ))}
+            .map((day) =>
+              renderSelectedDay ? (
+                renderSelectedDay(day)
+              ) : (
+                <CareerDay
+                  key={day.id}
+                  day={day as unknown as Parameters<typeof CareerDay>[0]["day"]}
+                />
+              ),
+            )}
         </div>
       )}
     </div>

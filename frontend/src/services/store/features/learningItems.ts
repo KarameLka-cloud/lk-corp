@@ -56,7 +56,12 @@ export const learningItemsApi = baseApi.injectEndpoints({
       invalidatesTags: (_result, _error, item) => [
         { type: "LearningItems", id: item.id },
         ...(item.category && item.type
-          ? [{ type: "LearningItems" as const, id: `${item.category}:${item.type}` }]
+          ? [
+              {
+                type: "LearningItems" as const,
+                id: `${item.category}:${item.type}`,
+              },
+            ]
           : []),
       ],
     }),
@@ -65,9 +70,7 @@ export const learningItemsApi = baseApi.injectEndpoints({
         url: `${API_ENDPOINTS.LEARNING_ITEMS}${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: (_result, _error, id) => [
-        { type: "LearningItems", id },
-      ],
+      invalidatesTags: (_result, _error, id) => [{ type: "LearningItems", id }],
     }),
   }),
 });

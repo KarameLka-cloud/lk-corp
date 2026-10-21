@@ -28,8 +28,7 @@ export const useLogin = () => {
       dispatch(baseApi.util.resetApiState());
       navigate(ROUTES.ROOT);
     } catch (error: unknown) {
-      const message =
-        getApiErrorMessage(error) ?? "Ошибка авторизации";
+      const message = getApiErrorMessage(error) ?? "Ошибка авторизации";
       setErrorMessage(message);
     }
   };

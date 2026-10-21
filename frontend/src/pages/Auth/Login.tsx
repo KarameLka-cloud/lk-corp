@@ -18,9 +18,7 @@ function Login(): JSX.Element {
   const { loginUser, errorMessage, isLoading } = useLogin();
   const [formItems, setFormItems] = useState({ login: "", password: "" });
 
-  const handleChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setFormItems((previous) => ({ ...previous, [name]: value }));
   };

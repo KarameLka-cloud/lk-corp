@@ -162,7 +162,7 @@ function UniversalCard({ className, item }: UniversalCardProps): JSX.Element {
                 <span className="shrink-0 text-gray-500 text-xs uppercase tracking-wide font-medium leading-none">
                   {field.label}
                 </span>
-                <span className="min-w-0 font-medium text-gray-900 tabular-nums break-words leading-snug">
+                <span className="min-w-0 font-medium text-gray-900 tabular-nums wrap-break-word leading-snug">
                   {field.value}
                 </span>
               </div>

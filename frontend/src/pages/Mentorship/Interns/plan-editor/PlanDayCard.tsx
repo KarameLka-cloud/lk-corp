@@ -20,7 +20,10 @@ import DatePickerField from "@/components/ui/custom/DatePickerField";
 import ReadonlyFieldValue from "@/components/ui/custom/ReadonlyFieldValue";
 import { cn } from "@/lib/utils";
 import { formatDayRange, isDaySpan } from "@/utils/formatDayRange.ts";
-import { COMPLETION_STATUS_OPTIONS, EMPTY_DAY_TASKS_MESSAGE } from "@/constants/adaptation.ts";
+import {
+  COMPLETION_STATUS_OPTIONS,
+  EMPTY_DAY_TASKS_MESSAGE,
+} from "@/constants/adaptation.ts";
 import type {
   CommentFieldKey,
   CommentPermissions,
@@ -68,7 +71,9 @@ interface PlanDayCardProps {
   savingTaskKey: string | null;
   isSavingDayFields: boolean;
   onDayFieldChange: (
-    patch: Partial<Pick<EditablePlanDay, "date_from" | "date_to" | "completion">>,
+    patch: Partial<
+      Pick<EditablePlanDay, "date_from" | "date_to" | "completion">
+    >,
   ) => void;
   onCommentChange: (commentKey: CommentFieldKey, value: string) => void;
   onTaskStatusChange: (
@@ -175,10 +180,7 @@ function PlanDayCard({
         <div className="mt-4 flex flex-col gap-2">
           {day.tasks.length > 0 ? (
             day.tasks.map((task, taskIndex) => (
-              <div
-                key={task.id}
-                className="rounded-lg bg-muted/60 p-3"
-              >
+              <div key={task.id} className="rounded-lg bg-muted/60 p-3">
                 <PlanTaskRow
                   description={task.description}
                   status={task.status}
@@ -201,29 +203,29 @@ function PlanDayCard({
         </div>
 
         <DayCommentsSection>
-            {COMMENT_FIELDS.map((field) => {
-              const saveKey = field.saveKey;
-              if (commentPermissions[field.canEdit] && saveKey) {
-                return (
-                  <CommentFieldWithSave
-                    key={field.key}
-                    label={field.label}
-                    value={day[field.key]}
-                    savedValue={initialDay?.[field.key] ?? ""}
-                    isSaving={savingCommentKey === `${day.id}-${saveKey}`}
-                    onChange={(value) => onCommentChange(field.key, value)}
-                    onSave={() => onSaveComment(saveKey)}
-                  />
-                );
-              }
-
+          {COMMENT_FIELDS.map((field) => {
+            const saveKey = field.saveKey;
+            if (commentPermissions[field.canEdit] && saveKey) {
               return (
-                <Field key={field.key}>
-                  <FieldLabel>{field.label}</FieldLabel>
-                  <ReadonlyFieldValue value={day[field.key]} />
-                </Field>
+                <CommentFieldWithSave
+                  key={field.key}
+                  label={field.label}
+                  value={day[field.key]}
+                  savedValue={initialDay?.[field.key] ?? ""}
+                  isSaving={savingCommentKey === `${day.id}-${saveKey}`}
+                  onChange={(value) => onCommentChange(field.key, value)}
+                  onSave={() => onSaveComment(saveKey)}
+                />
               );
-            })}
+            }
+
+            return (
+              <Field key={field.key}>
+                <FieldLabel>{field.label}</FieldLabel>
+                <ReadonlyFieldValue value={day[field.key]} />
+              </Field>
+            );
+          })}
         </DayCommentsSection>
       </CardContent>
     </Card>

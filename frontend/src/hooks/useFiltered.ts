@@ -13,7 +13,9 @@ export const useFiltered = <T extends object>(
     return data.filter((item) => {
       const haystack = getSearchText
         ? getSearchText(item)
-        : Object.values(item).map((value) => String(value ?? "")).join(" ");
+        : Object.values(item)
+            .map((value) => String(value ?? ""))
+            .join(" ");
       return haystack.toLowerCase().includes(searchLower);
     });
   }, [data, search, getSearchText]);

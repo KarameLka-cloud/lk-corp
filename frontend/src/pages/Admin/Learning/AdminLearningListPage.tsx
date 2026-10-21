@@ -24,9 +24,7 @@ import {
   LEARNING_TYPE_LABELS,
   buildAdminLearningPath,
 } from "@/constants/learning.ts";
-import {
-  LEARNING_CREATE_SUBMIT_LABELS,
-} from "@/pages/Admin/Learning/learningForm.ts";
+import { LEARNING_CREATE_SUBMIT_LABELS } from "@/pages/Admin/Learning/learningForm.ts";
 import { useResolvedLearningRoute } from "@/hooks/useResolvedLearningRoute.ts";
 import PageTitle from "@/components/PageTitle.tsx";
 import LearningItemFormDialog from "@/pages/Admin/Learning/LearningItemFormDialog";

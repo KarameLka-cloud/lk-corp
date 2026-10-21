@@ -107,7 +107,9 @@ function ResourceListPage<T>({
               items.map((item) => (
                 <TableRow
                   key={getRowKey(item)}
-                  className={onRowClick ? "cursor-pointer select-none" : undefined}
+                  className={
+                    onRowClick ? "cursor-pointer select-none" : undefined
+                  }
                   onClick={() => onRowClick?.(item)}
                 >
                   {columns.map((column) => (

@@ -41,7 +41,10 @@ export interface AdaptationPlanTemplateBody {
 }
 
 const PLAN_LIST_TAG = { type: "AdaptationPlans" as const, id: "LIST" };
-const TEMPLATE_LIST_TAG = { type: "AdaptationPlanTemplates" as const, id: "LIST" };
+const TEMPLATE_LIST_TAG = {
+  type: "AdaptationPlanTemplates" as const,
+  id: "LIST",
+};
 
 /**
  * A mutation on one plan must refresh that plan and the roster, but it must

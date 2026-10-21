@@ -7,7 +7,11 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/shadcn/collapsible";
 
-function DayCommentsSection({ children }: { children: ReactNode }): JSX.Element {
+function DayCommentsSection({
+  children,
+}: {
+  children: ReactNode;
+}): JSX.Element {
   return (
     <Collapsible className="group/collapsible mt-4">
       <CollapsibleTrigger asChild>

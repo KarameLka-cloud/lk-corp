@@ -110,7 +110,7 @@ function LearningItemFormFields({
               <SelectTrigger id="learning-position" className="w-full">
                 <SelectValue placeholder="Выберите должность" />
               </SelectTrigger>
-              <SelectContent className="z-[60]">
+              <SelectContent className="z-60">
                 {positions.map((position) => (
                   <SelectItem key={position.id} value={String(position.id)}>
                     {position.name}

@@ -2,7 +2,13 @@ import { JSX, useState } from "react";
 import { UserType } from "@/interfaces/api/UserType.ts";
 import { useFiltered } from "@/hooks/useFiltered.ts";
 import { useGetUsersQuery } from "@/services/store/features/users.ts";
-import { isUserInRole, ROLE_LABELS, USER_ROLES, displayRoleName, type UserRole } from "@/constants/roles.ts";
+import {
+  isUserInRole,
+  ROLE_LABELS,
+  USER_ROLES,
+  displayRoleName,
+  type UserRole,
+} from "@/constants/roles.ts";
 import { Badge } from "@/components/ui/shadcn/badge";
 import { Field } from "@/components/ui/shadcn/field";
 import {

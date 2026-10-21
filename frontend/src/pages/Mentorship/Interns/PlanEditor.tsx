@@ -1,5 +1,6 @@
 import { FormEvent, JSX, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { LayoutGrid, List } from "lucide-react";
 import { toast } from "sonner";
 import {
   useDeleteAdaptationPlanMutation,
@@ -14,7 +15,12 @@ import {
   useGetSupervisorsQuery,
   useGetUsersQuery,
 } from "@/services/store/features/users.ts";
-import { USER_ROLES, hasAnyRoleFromUser, hasRole, PLAN_EDIT_ROLES } from "@/constants/roles.ts";
+import {
+  USER_ROLES,
+  hasAnyRoleFromUser,
+  hasRole,
+  PLAN_EDIT_ROLES,
+} from "@/constants/roles.ts";
 import { useUser } from "@/hooks/useUser.ts";
 import ResourceFormPage from "@/components/resource-list/ResourceFormPage";
 import {
@@ -39,9 +45,16 @@ import { PLAN_DELETE_MESSAGES } from "@/constants/deleteMessages.ts";
 import { FORM_STATUS_MESSAGES } from "@/constants/formStatus.ts";
 import { toDateInputValue } from "@/utils/formValues.ts";
 import { resolveRoleUsers } from "@/utils/resolveRoleUsers.ts";
-import { getApiErrorMessage, getApiErrorStatus, toastMutationError } from "@/utils/apiError.ts";
+import {
+  getApiErrorMessage,
+  getApiErrorStatus,
+  toastMutationError,
+} from "@/utils/apiError.ts";
 import { sortAdaptationDays } from "@/utils/adaptationPlan.ts";
 import { withAssignedUser } from "@/utils/userSelectOptions.ts";
+import AdaptationDaysView from "@/components/adaptation/AdaptationDaysView";
+
+type PlanEditorViewType = "list" | "blocks";
 
 function PlanEditor(): JSX.Element {
   const navigate = useNavigate();
@@ -74,11 +87,7 @@ function PlanEditor(): JSX.Element {
   const plan = data;
 
   const isAdmin = hasRole(role, roleName, USER_ROLES.ADMIN);
-  const isDepartmentHead = hasRole(
-    role,
-    roleName,
-    USER_ROLES.DEPARTMENT_HEAD,
-  );
+  const isDepartmentHead = hasRole(role, roleName, USER_ROLES.DEPARTMENT_HEAD);
   const canEditMeta = hasAnyRoleFromUser(role, roleName, PLAN_EDIT_ROLES);
   const canEditDays = canEditMeta;
   const canDeletePlan = canEditMeta;
@@ -124,6 +133,8 @@ function PlanEditor(): JSX.Element {
   const [savingCommentKey, setSavingCommentKey] = useState<string | null>(null);
   const [savingTaskKey, setSavingTaskKey] = useState<string | null>(null);
   const [savingDayId, setSavingDayId] = useState<number | null>(null);
+  const [viewType, setViewType] = useState<PlanEditorViewType>("list");
+  const [selectedDayId, setSelectedDayId] = useState<number | null>(null);
 
   const loadErrorMessage = useMemo(() => {
     if (!error) {
@@ -161,7 +172,8 @@ function PlanEditor(): JSX.Element {
       shift: plan.shift ?? 1,
       mentor: plan.mentor ?? plan.mentor_user?.id ?? null,
       supervisor: plan.supervisor ?? plan.supervisor_user?.id ?? null,
-      departmentHead: plan.department_head ?? plan.department_head_user?.id ?? null,
+      departmentHead:
+        plan.department_head ?? plan.department_head_user?.id ?? null,
     });
 
     const mappedDays: EditablePlanDay[] = sortAdaptationDays(
@@ -236,7 +248,9 @@ function PlanEditor(): JSX.Element {
 
   const handleDayFieldChange = async (
     dayIndex: number,
-    patch: Partial<Pick<EditablePlanDay, "date_from" | "date_to" | "completion">>,
+    patch: Partial<
+      Pick<EditablePlanDay, "date_from" | "date_to" | "completion">
+    >,
   ) => {
     if (!plan || !canEditDays) {
       return;
@@ -444,30 +458,104 @@ function PlanEditor(): JSX.Element {
         onDelete={() => handleDelete(plan.id)}
       />
 
-      <div className="flex flex-col gap-4">
-        {days.map((day, dayIndex) => (
-          <PlanDayCard
-            key={day.id}
-            day={day}
-            initialDay={initialDays[dayIndex]}
-            commentPermissions={commentPermissions}
-            canEditDays={canEditDays}
-            savingCommentKey={savingCommentKey}
-            savingTaskKey={savingTaskKey}
-            isSavingDayFields={savingDayId === day.id}
-            onDayFieldChange={(patch) => void handleDayFieldChange(dayIndex, patch)}
-            onCommentChange={(commentKey, value) =>
-              handleCommentChange(dayIndex, commentKey, value)
-            }
-            onTaskStatusChange={(taskIndex, status) =>
-              void handleTaskStatusChange(dayIndex, taskIndex, status)
-            }
-            onSaveComment={(commentKey) =>
-              void handleSaveComment(dayIndex, commentKey)
-            }
-          />
-        ))}
-      </div>
+      {days.length > 0 && (
+        <div className="flex items-center gap-2">
+          <div className="inline-flex rounded-lg border bg-card p-0.5">
+            <button
+              type="button"
+              onClick={() => setViewType("list")}
+              className={`
+                flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-all
+                ${
+                  viewType === "list"
+                    ? "bg-primary text-primary-foreground shadow-sm"
+                    : "text-muted-foreground hover:bg-muted"
+                }
+              `}
+            >
+              <List className="size-4" />
+              <span>Список</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setViewType("blocks")}
+              className={`
+                flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-all
+                ${
+                  viewType === "blocks"
+                    ? "bg-primary text-primary-foreground shadow-sm"
+                    : "text-muted-foreground hover:bg-muted"
+                }
+              `}
+            >
+              <LayoutGrid className="size-4" />
+              <span>По дням</span>
+            </button>
+          </div>
+        </div>
+      )}
+
+      {viewType === "list" ? (
+        <div className="flex flex-col gap-4">
+          {days.map((day, dayIndex) => (
+            <PlanDayCard
+              key={day.id}
+              day={day}
+              initialDay={initialDays[dayIndex]}
+              commentPermissions={commentPermissions}
+              canEditDays={canEditDays}
+              savingCommentKey={savingCommentKey}
+              savingTaskKey={savingTaskKey}
+              isSavingDayFields={savingDayId === day.id}
+              onDayFieldChange={(patch) =>
+                void handleDayFieldChange(dayIndex, patch)
+              }
+              onCommentChange={(commentKey, value) =>
+                handleCommentChange(dayIndex, commentKey, value)
+              }
+              onTaskStatusChange={(taskIndex, status) =>
+                void handleTaskStatusChange(dayIndex, taskIndex, status)
+              }
+              onSaveComment={(commentKey) =>
+                void handleSaveComment(dayIndex, commentKey)
+              }
+            />
+          ))}
+        </div>
+      ) : (
+        <AdaptationDaysView<EditablePlanDay>
+          days={days}
+          selectedDayId={selectedDayId}
+          onSelectDay={setSelectedDayId}
+          renderSelectedDay={(day) => {
+            const dayIndex = days.findIndex((d) => d.id === day.id);
+            return (
+              <PlanDayCard
+                key={day.id}
+                day={day}
+                initialDay={initialDays[dayIndex]}
+                commentPermissions={commentPermissions}
+                canEditDays={canEditDays}
+                savingCommentKey={savingCommentKey}
+                savingTaskKey={savingTaskKey}
+                isSavingDayFields={savingDayId === day.id}
+                onDayFieldChange={(patch) =>
+                  void handleDayFieldChange(dayIndex, patch)
+                }
+                onCommentChange={(commentKey, value) =>
+                  handleCommentChange(dayIndex, commentKey, value)
+                }
+                onTaskStatusChange={(taskIndex, status) =>
+                  void handleTaskStatusChange(dayIndex, taskIndex, status)
+                }
+                onSaveComment={(commentKey) =>
+                  void handleSaveComment(dayIndex, commentKey)
+                }
+              />
+            );
+          }}
+        />
+      )}
     </ResourceFormPage>
   );
 }

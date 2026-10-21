@@ -132,10 +132,7 @@ function LearningItemFormDialog({
       }
       isLoading={isLoading}
     >
-      <form
-        onSubmit={handleSubmit}
-        className="flex min-h-0 flex-1 flex-col"
-      >
+      <form onSubmit={handleSubmit} className="flex min-h-0 flex-1 flex-col">
         <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4">
           <LearningItemFormFields
             type={type}

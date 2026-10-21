@@ -31,9 +31,7 @@ export const adminRoutes: RouteObject = {
       path: ROUTES.ADMIN_ADAPTATION_TEMPLATE_TASKS,
       element: lazyPage(
         () =>
-          import(
-            "@/pages/Admin/Adaptation/Templates/TemplateTasks/TemplateTasks.tsx"
-          ),
+          import("@/pages/Admin/Adaptation/Templates/TemplateTasks/TemplateTasks.tsx"),
         "Редактирование плана адаптации",
       ),
     },

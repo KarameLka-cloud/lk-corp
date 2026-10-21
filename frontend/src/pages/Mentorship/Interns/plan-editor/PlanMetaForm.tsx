@@ -50,9 +50,7 @@ function PlanMetaForm({
     <Card>
       <CardHeader>
         <CardTitle>
-          {canEditMeta
-            ? "Редактирование плана адаптации"
-            : "План адаптации"}
+          {canEditMeta ? "Редактирование плана адаптации" : "План адаптации"}
         </CardTitle>
       </CardHeader>
       <form onSubmit={onSubmit}>
@@ -60,12 +58,7 @@ function PlanMetaForm({
           <FieldGroup className="grid gap-4 sm:grid-cols-2">
             <Field>
               <FieldLabel htmlFor="plan-intern">Стажер</FieldLabel>
-              <Input
-                id="plan-intern"
-                value={internLabel}
-                readOnly
-                disabled
-              />
+              <Input id="plan-intern" value={internLabel} readOnly disabled />
             </Field>
             <DatePickerField
               dateId="plan-start-date"
@@ -90,9 +83,7 @@ function PlanMetaForm({
               <Input
                 id="plan-template"
                 value={
-                  templateName
-                    ? `${templateName} (смена: ${form.shift})`
-                    : "—"
+                  templateName ? `${templateName} (смена: ${form.shift})` : "—"
                 }
                 readOnly
                 disabled

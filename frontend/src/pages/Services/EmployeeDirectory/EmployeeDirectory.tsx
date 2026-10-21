@@ -93,7 +93,9 @@ function EmployeeDetailDialog({
                 {employee.cn ?? "Сотрудник"}
               </DialogTitle>
               <DialogDescription>
-                {employee.description || employee.department || "Карточка сотрудника"}
+                {employee.description ||
+                  employee.department ||
+                  "Карточка сотрудника"}
               </DialogDescription>
             </div>
           </div>

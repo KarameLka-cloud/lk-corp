@@ -4,7 +4,9 @@ export function validateTemplateMeta(
   name: string,
   workSchedule: string,
   shift: string,
-): { ok: true; name: string; workSchedule: string; shift: number } | { ok: false; error: string } {
+):
+  | { ok: true; name: string; workSchedule: string; shift: number }
+  | { ok: false; error: string } {
   const trimmedName = name.trim();
   if (!trimmedName) {
     return { ok: false, error: "Укажите название шаблона" };

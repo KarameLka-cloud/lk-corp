@@ -7,7 +7,9 @@ function normalizeComment(value: string | null | undefined): string {
   return value ?? "";
 }
 
-function normalizeOptionalDate(value: string | null | undefined): string | null {
+function normalizeOptionalDate(
+  value: string | null | undefined,
+): string | null {
   return value || null;
 }
 

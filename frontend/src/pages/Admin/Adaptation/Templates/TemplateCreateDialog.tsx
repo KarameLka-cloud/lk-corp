@@ -85,7 +85,7 @@ function TemplateCreateDialog({
                 <SelectTrigger id="template-schedule" className="w-full">
                   <SelectValue placeholder="Выберите график" />
                 </SelectTrigger>
-                <SelectContent className="z-[60]">
+                <SelectContent className="z-60">
                   {WORK_SCHEDULE_OPTIONS.map((schedule) => (
                     <SelectItem key={schedule} value={schedule}>
                       {schedule}

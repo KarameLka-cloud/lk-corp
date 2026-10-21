@@ -61,7 +61,11 @@ function DatePickerField({
   const selectedDate = parseDateValue(date);
 
   const datePicker = (
-    <Popover modal open={open} onOpenChange={(next) => !disabled && setOpen(next)}>
+    <Popover
+      modal
+      open={open}
+      onOpenChange={(next) => !disabled && setOpen(next)}
+    >
       <PopoverTrigger asChild>
         <Button
           type="button"
@@ -82,10 +86,7 @@ function DatePickerField({
           <ChevronDownIcon />
         </Button>
       </PopoverTrigger>
-      <PopoverContent
-        className="z-[60] w-auto overflow-hidden p-0"
-        align="start"
-      >
+      <PopoverContent className="z-60 w-auto overflow-hidden p-0" align="start">
         <Calendar
           mode="single"
           selected={selectedDate}
@@ -130,9 +131,7 @@ function DatePickerField({
             step="60"
             value={time.slice(0, 5)}
             disabled={disabled}
-            onChange={(event) =>
-              onTimeChange(event.target.value.slice(0, 5))
-            }
+            onChange={(event) => onTimeChange(event.target.value.slice(0, 5))}
             className={TIME_INPUT_CLASS}
           />
         </Field>

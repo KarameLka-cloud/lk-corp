@@ -60,7 +60,7 @@ export function RuleRowFields({
               <SelectTrigger id={`${idPrefix}-role`} className="w-full">
                 <SelectValue placeholder="Выберите ответственного" />
               </SelectTrigger>
-              <SelectContent className="z-[60]">
+              <SelectContent className="z-60">
                 {RESPONSIBLE_ROLE_OPTIONS.map((role) => (
                   <SelectItem key={role} value={role}>
                     {role}
@@ -92,11 +92,7 @@ export function RuleRowFields({
   );
 }
 
-export function RuleRowReadonly({
-  rule,
-}: {
-  rule: TaskRuleForm;
-}): JSX.Element {
+export function RuleRowReadonly({ rule }: { rule: TaskRuleForm }): JSX.Element {
   return (
     <div className="rounded-lg border p-4">
       <FieldGroup className="grid gap-4">

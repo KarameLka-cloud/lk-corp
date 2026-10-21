@@ -11,7 +11,12 @@ import {
 } from "@/services/store/features/users.ts";
 import { useUser } from "@/hooks/useUser.ts";
 import { UserType } from "@/interfaces/api/UserType.ts";
-import { hasAnyRoleFromUser, hasRole, PLAN_EDIT_ROLES, USER_ROLES } from "@/constants/roles.ts";
+import {
+  hasAnyRoleFromUser,
+  hasRole,
+  PLAN_EDIT_ROLES,
+  USER_ROLES,
+} from "@/constants/roles.ts";
 import ResourceListPage, {
   type ResourceColumn,
 } from "@/components/resource-list/ResourceListPage";
@@ -60,11 +65,7 @@ function Interns(): JSX.Element {
   const isAdmin = hasRole(role, roleName, USER_ROLES.ADMIN);
   const isMentor = hasRole(role, roleName, USER_ROLES.MENTOR);
   const isSupervisor = hasRole(role, roleName, USER_ROLES.SUPERVISOR);
-  const isDepartmentHead = hasRole(
-    role,
-    roleName,
-    USER_ROLES.DEPARTMENT_HEAD,
-  );
+  const isDepartmentHead = hasRole(role, roleName, USER_ROLES.DEPARTMENT_HEAD);
   const canCreatePlan = hasAnyRoleFromUser(role, roleName, PLAN_EDIT_ROLES);
 
   // Only a fallback: plans already embed mentor, supervisor and head records.

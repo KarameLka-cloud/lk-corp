@@ -34,7 +34,7 @@ function Adaptation(): JSX.Element {
     isLoading,
     isError,
   } = useGetMyAdaptationPlanQuery(undefined);
-  const [viewType, setViewType] = useState<AdaptationViewType>("blocks");
+  const [viewType, setViewType] = useState<AdaptationViewType>("list");
   const [selectedDayId, setSelectedDayId] = useState<number | null>(null);
 
   const handleUpdateInternComment = async (
@@ -131,21 +131,6 @@ function Adaptation(): JSX.Element {
           <div className="inline-flex rounded-lg border bg-card p-0.5">
             <button
               type="button"
-              onClick={() => setViewType("blocks")}
-              className={`
-                flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-all
-                ${
-                  viewType === "blocks"
-                    ? "bg-primary text-primary-foreground shadow-sm"
-                    : "text-muted-foreground hover:bg-muted"
-                }
-              `}
-            >
-              <LayoutGrid className="size-4" />
-              <span>Блоки</span>
-            </button>
-            <button
-              type="button"
               onClick={() => setViewType("list")}
               className={`
                 flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-all
@@ -158,6 +143,21 @@ function Adaptation(): JSX.Element {
             >
               <List className="size-4" />
               <span>Список</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setViewType("blocks")}
+              className={`
+                flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-all
+                ${
+                  viewType === "blocks"
+                    ? "bg-primary text-primary-foreground shadow-sm"
+                    : "text-muted-foreground hover:bg-muted"
+                }
+              `}
+            >
+              <LayoutGrid className="size-4" />
+              <span>По дням</span>
             </button>
           </div>
         </div>
@@ -186,8 +186,6 @@ function Adaptation(): JSX.Element {
           days={adaptationDays}
           selectedDayId={selectedDayId}
           onSelectDay={setSelectedDayId}
-          onUpdateInternComment={handleUpdateInternComment}
-          onUpdateTaskStatus={handleUpdateTaskStatus}
         />
       )}
     </div>
