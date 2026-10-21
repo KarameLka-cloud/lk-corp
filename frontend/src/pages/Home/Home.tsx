@@ -16,12 +16,18 @@ const RADIUS = 45;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 
 function getAdaptationProgress(plan?: AdaptationPlanType | null) {
-  const tasks = (plan?.days ?? []).flatMap((day) => day.tasks ?? []);
-  if (tasks.length === 0) return null;
+  const days = plan?.days ?? [];
+  if (days.length === 0) return null;
 
+  const tasks = days.flatMap((day) => day.tasks ?? []);
   const completedTasks = tasks.filter((t) => t.status === "выполнено").length;
+
+  const completedDays = days.filter((d) => d.completion === "выполнен").length;
+
   return {
-    percent: Math.round((completedTasks / tasks.length) * 100),
+    percent: Math.round((completedDays / days.length) * 100),
+    completedDays,
+    totalDays: days.length,
     completedTasks,
     totalTasks: tasks.length,
   };
@@ -136,13 +142,23 @@ function Home(): JSX.Element {
               <div className="flex h-full items-center justify-between gap-6">
                 <div className="flex h-full flex-col justify-between">
                   <CardTitle>Прогресс адаптации</CardTitle>
-                  <div className="space-y-2">
-                    <p className="text-sm text-muted-foreground">
-                      Выполнено задач
-                    </p>
-                    <p className="text-3xl font-semibold text-foreground">
-                      {progress.completedTasks} / {progress.totalTasks}
-                    </p>
+                  <div className="flex items-center justify-between gap-4">
+                    <div className="text-center">
+                      <p className="text-sm text-muted-foreground">
+                        Завершено дней
+                      </p>
+                      <p className="text-2xl font-semibold text-foreground">
+                        {progress.completedDays} / {progress.totalDays}
+                      </p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-sm text-muted-foreground">
+                        Выполнено задач
+                      </p>
+                      <p className="text-2xl font-semibold text-foreground">
+                        {progress.completedTasks} / {progress.totalTasks}
+                      </p>
+                    </div>
                   </div>
                 </div>
                 <div className="flex h-full items-center justify-center">

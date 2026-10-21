@@ -80,18 +80,22 @@ function Interns(): JSX.Element {
 
   const visiblePlans = useMemo(() => {
     const plans = plansData ?? [];
-    if (isAdmin) return plans;
-    if (!currentUserId) return [];
-    if (isMentor) {
-      return plans.filter((plan) => plan.mentor === currentUserId);
-    }
-    if (isSupervisor) {
-      return plans.filter((plan) => plan.supervisor === currentUserId);
-    }
-    if (isDepartmentHead) {
-      return plans.filter((plan) => plan.department_head === currentUserId);
-    }
-    return [];
+    let filtered: AdaptationPlanType[];
+    if (isAdmin) filtered = plans;
+    else if (!currentUserId) return [];
+    else if (isMentor)
+      filtered = plans.filter((plan) => plan.mentor === currentUserId);
+    else if (isSupervisor)
+      filtered = plans.filter((plan) => plan.supervisor === currentUserId);
+    else if (isDepartmentHead)
+      filtered = plans.filter((plan) => plan.department_head === currentUserId);
+    else return [];
+
+    return [...filtered].sort((a, b) => {
+      const dateA = a.start_date ?? "";
+      const dateB = b.start_date ?? "";
+      return dateA.localeCompare(dateB);
+    });
   }, [
     plansData,
     isAdmin,
