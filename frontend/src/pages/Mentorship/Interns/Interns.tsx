@@ -30,6 +30,7 @@ import PlanCreateDialog from "@/pages/Mentorship/Interns/PlanCreateDialog";
 import type { AdaptationPlanType } from "@/interfaces/api/AdaptationPlanType.ts";
 import { useFiltered } from "@/hooks/useFiltered.ts";
 import { PLAN_DELETE_MESSAGES } from "@/constants/deleteMessages.ts";
+import convertDate from "@/utils/convertDate.ts";
 
 const buildNameLookup = (users: UserType[]) =>
   new Map(
@@ -135,7 +136,7 @@ function Interns(): JSX.Element {
     () => [
       {
         key: "intern",
-        label: "Имя стажера",
+        label: "ФИО стажера",
         className: "font-medium",
         render: (plan) => plan.user?.name ?? "Пользователь без имени",
       },
@@ -146,29 +147,12 @@ function Interns(): JSX.Element {
           getPersonName(plan.mentor_user, plan.mentor, mentorNames),
       },
       {
-        key: "supervisor",
-        label: "Руководитель отделения",
-        render: (plan) =>
-          plan.supervisor
-            ? getPersonName(
-                plan.supervisor_user,
-                plan.supervisor,
-                supervisorNames,
-              )
-            : "Не назначен",
-      },
-      {
-        key: "department_head",
-        label: "Начальник отдела",
-        render: (plan) =>
-          getPersonName(
-            plan.department_head_user,
-            plan.department_head,
-            headNames,
-          ),
+        key: "start_date",
+        label: "Дата начала стажировки",
+        render: (plan) => convertDate(plan.start_date),
       },
     ],
-    [mentorNames, supervisorNames, headNames],
+    [mentorNames],
   );
 
   return (

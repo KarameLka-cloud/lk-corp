@@ -42,7 +42,7 @@ const TAB_IDS = Object.keys(TABS) as UsersTab[];
 const COLUMNS: ResourceColumn<UserType>[] = [
   {
     key: "name",
-    label: "Имя пользователя",
+    label: "ФИО пользователя",
     className: "font-medium",
     render: (user) => user.name,
   },
